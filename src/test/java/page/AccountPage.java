@@ -2,7 +2,6 @@ package page;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -13,13 +12,12 @@ public class AccountPage extends BasePage {
     private final By depositTabButton = By.xpath("//button[@ng-click='deposit()']");
     private final By withdrawlTabButton = By.xpath("//button[@ng-click='withdrawl()']");
     private final By amountField = By.xpath("//input[@ng-model='amount']");
-    private final By amountField2 = By.cssSelector(".form-control");
     private final By addToDepositButton = By.xpath("//button[text()='Deposit']");
     private final By addToWithdrawButton = By.xpath("//button[text()='Withdraw']");
     private final By ownerNameSpan = By.xpath("//span[contains(@class,'fontBig')]");
-    //    private final By successfulDepositOperationMessage = By.xpath("//span[text()='Deposit Successful']");
     private final By successfulMessage = By.xpath("//span[@ng-show='message']");
-
+    private final By balanceDiv = By.xpath("//strong[@class='ng-binding'][2]");
+    private final By rowsInTable = By.xpath("//table/tbody/tr");
 
     public AccountPage(WebDriver driver) {
         super(driver);
@@ -33,7 +31,8 @@ public class AccountPage extends BasePage {
     }
 
     @Step("Установить значение {value} в поле \"amount\"")
-    private AccountPage setValueInAmountDepositField(int value) {
+    private AccountPage setValueInAmountField(int value) throws InterruptedException {
+        Thread.sleep(500);
         WebElement inputField = wait.until(ExpectedConditions.elementToBeClickable(amountField));
         inputField.sendKeys(String.valueOf(value));
         return this;
@@ -47,42 +46,40 @@ public class AccountPage extends BasePage {
     }
 
     @Step("Внести сумму, равную {value} на депозит")
-    public AccountPage addToDeposit(int value) {
+    public AccountPage addToDeposit(int value) throws InterruptedException {
         clickOnDepositTabButton();
-        setValueInAmountDepositField(value);
+        setValueInAmountField(value);
         clickOnAddToDepositButton();
         return this;
     }
 
-    @Step("Установить значение {value} в поле \"amount\"")
-    private AccountPage setValueInAmountWithdrawField(int value) throws InterruptedException {
-        WebElement inputField = wait.until(ExpectedConditions.elementToBeClickable(amountField));
-        Thread.sleep(1000);
-        inputField.click();
-        inputField.sendKeys(String.valueOf(value));
-        return this;
-    }
-
-
     @Step("Переключиться на таб \"Withdrawl\"")
     private AccountPage clickOnWithdrawlTabButton() {
+        wait.until(ExpectedConditions.presenceOfElementLocated(withdrawlTabButton));
         driver.findElement(withdrawlTabButton).click();
         return this;
     }
 
-    @Step("Клик на кнопку \"Withdrawl\" для списания суммы с депозита")
+    @Step("Клик на кнопку \"Withdrawl\" для списания с депозита")
     private AccountPage clickOnWithdrawlButton() {
         driver.findElement(addToWithdrawButton).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(successfulMessage));
         return this;
     }
 
     @Step("Списать сумму, равную {value} с депозита")
     public AccountPage withdrawlFromDeposit(int value) throws InterruptedException {
-//        driver.navigate().refresh();
         clickOnWithdrawlTabButton();
-        setValueInAmountWithdrawField(value);
+        setValueInAmountField(value);
         clickOnWithdrawlButton();
         return this;
+    }
+
+    @Step("Переключиться на таб \"Transactions\"")
+    public TransactionsPage clickOnTransactionTabButton() throws InterruptedException {
+//        wait.until(ExpectedConditions.presenceOfElementLocated(transactionsButton));
+        driver.findElement(transactionsButton).click();
+        return new TransactionsPage(driver);
     }
 
     public String getOwnerName() {
@@ -93,5 +90,8 @@ public class AccountPage extends BasePage {
         return driver.findElement(successfulMessage).getText();
     }
 
+    public String getBalance() {
+        return driver.findElement(balanceDiv).getText();
+    }
 
 }

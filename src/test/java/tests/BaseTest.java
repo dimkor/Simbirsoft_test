@@ -17,12 +17,10 @@ public class BaseTest {
 
     @BeforeEach
     public void setUp() {
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
-        driver = new ChromeDriver(chromeOptions);
+        driver = new ChromeDriver();
         driver.manage().window().setSize(new Dimension(1280, 720));
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
 
     @AfterEach

@@ -5,29 +5,28 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import tests.BaseTest;
 
-public class MainPage extends BasePage {
+public class LoginPage extends BasePage {
 
     private final By loginAsCustomerButton = By.xpath("//button[@ng-click='customer()']");
     private final By yourNameSelectField = By.id("userSelect");
     private final By loginButton = By.xpath("//button[text()='Login']");
 
-    public MainPage(WebDriver driver) {
+    public LoginPage(WebDriver driver) {
         super(driver);
     }
     @Step("Открыть страницу сайта")
-    public MainPage open(String url) {
+    public LoginPage open(String url) {
         driver.get(url);
         return this;
     }
     @Step("Нажать кнопку \"Customer Login\"")
-    public MainPage clickOnLoginAsCustomer() {
+    public LoginPage clickOnLoginAsCustomer() {
         driver.findElement(loginAsCustomerButton).click();
         return this;
     }
     @Step("Выбрать пункт {value}")
-    public MainPage selectOption(String value) {
+    public LoginPage selectOption(String value) {
         WebElement selectElement = driver.findElement(yourNameSelectField);
         Select select = new Select(selectElement);
         select.selectByVisibleText(value);
@@ -39,7 +38,7 @@ public class MainPage extends BasePage {
         return new AccountPage(driver);
     }
 
-    @Step
+    @Step("Авторизоваться под именем \"{userName}\"")
     public AccountPage loginAs(String userName) {
         clickOnLoginAsCustomer();
         selectOption(userName);

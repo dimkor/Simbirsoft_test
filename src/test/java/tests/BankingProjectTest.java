@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import page.AccountPage;
-import page.MainPage;
+import page.LoginPage;
+import page.TransactionsPage;
 
 import java.time.LocalDate;
 
@@ -15,7 +16,7 @@ public class BankingProjectTest extends BaseTest {
     @Test
     @DisplayName("Открытие страницы сайта")
     public void openSite() {
-        MainPage mainPage = new MainPage(driver)
+        LoginPage loginPage = new LoginPage(driver)
                 .open(link);
         Assertions.assertEquals("XYZ Bank", driver.getTitle());
     }
@@ -23,7 +24,7 @@ public class BankingProjectTest extends BaseTest {
     @DisplayName("Авторизация")
     public void authorizationTest() {
         String accountOwner = "Harry Potter";
-        AccountPage accountPage = new MainPage(driver)
+        AccountPage accountPage = new LoginPage(driver)
                 .open(link)
                 .loginAs(accountOwner);
         Assertions.assertEquals(accountOwner, accountPage.getOwnerName());
@@ -34,7 +35,7 @@ public class BankingProjectTest extends BaseTest {
         String accountOwner = "Harry Potter";
         int fibbonachiNum = fibbonachiCalc();
 
-        AccountPage accountPage = new MainPage(driver)
+        AccountPage accountPage = new LoginPage(driver)
                 .open(link)
                 .loginAs(accountOwner)
                 .addToDeposit(fibbonachiNum);
@@ -47,21 +48,34 @@ public class BankingProjectTest extends BaseTest {
         String accountOwner = "Harry Potter";
         int fibbonachiNum = fibbonachiCalc();
 
-        AccountPage accountPage = new MainPage(driver)
+        AccountPage accountPage = new LoginPage(driver)
                 .open(link)
                 .loginAs(accountOwner)
                 .addToDeposit(fibbonachiNum)
                 .withdrawlFromDeposit(fibbonachiNum);
 
-        Thread.sleep(5000);
         Assertions.assertEquals("Transaction successful", accountPage.getMessage());
+        Assertions.assertEquals("0", accountPage.getBalance());
+    }
+
+    @Test
+    @DisplayName("Проверка информации о транзакциях")
+    public void openTransactionsTest() throws InterruptedException {
+        String accountOwner = "Harry Potter";
+        int fibbonachiNum = fibbonachiCalc();
+
+        TransactionsPage transactionsPage = new LoginPage(driver)
+                .open(link)
+                .loginAs(accountOwner)
+                .addToDeposit(fibbonachiNum)
+                .withdrawlFromDeposit(fibbonachiNum)
+                .clickOnTransactionTabButton();
+        Assertions.assertEquals(2, transactionsPage.getRowCount());
     }
 
     private int fibbonachiCalc() {
         int dayOfMonth = LocalDate.now().getDayOfMonth() + 1;
 
-//        if (dayOfMonth <= 1)
-//            return dayOfMonth;
         int previous = 0, current = 1;
         for (int i = 2; i <= dayOfMonth; i++) {
             int temp = current;
