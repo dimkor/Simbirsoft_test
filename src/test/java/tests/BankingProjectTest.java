@@ -57,7 +57,6 @@ public class BankingProjectTest extends BaseTest {
         Assertions.assertEquals("Transaction successful", accountPage.getMessage());
         Assertions.assertEquals("0", accountPage.getBalance());
     }
-
     @Test
     @DisplayName("Проверка информации о транзакциях")
     public void openTransactionsTest() throws InterruptedException {

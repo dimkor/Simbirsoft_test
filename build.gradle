@@ -28,7 +28,7 @@ test {
     useJUnitPlatform()
     retry {
         maxRetries = 3
-        maxFailures = 20
+        maxFailures = 10
         failOnPassedAfterRetry = true
     }
 }
