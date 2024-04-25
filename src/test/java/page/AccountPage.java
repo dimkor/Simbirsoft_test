@@ -17,7 +17,6 @@ public class AccountPage extends BasePage {
     private final By ownerNameSpan = By.xpath("//span[contains(@class,'fontBig')]");
     private final By successfulMessage = By.xpath("//span[@ng-show='message']");
     private final By balanceDiv = By.xpath("//strong[@class='ng-binding'][2]");
-    private final By rowsInTable = By.xpath("//table/tbody/tr");
 
     public AccountPage(WebDriver driver) {
         super(driver);
@@ -76,8 +75,7 @@ public class AccountPage extends BasePage {
     }
 
     @Step("Переключиться на таб \"Transactions\"")
-    public TransactionsPage clickOnTransactionTabButton() throws InterruptedException {
-//        wait.until(ExpectedConditions.presenceOfElementLocated(transactionsButton));
+    public TransactionsPage clickOnTransactionTabButton() {
         driver.findElement(transactionsButton).click();
         return new TransactionsPage(driver);
     }

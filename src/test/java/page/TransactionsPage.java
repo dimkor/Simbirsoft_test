@@ -1,17 +1,17 @@
 package page;
 
+import io.qameta.allure.Attachment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,7 +36,7 @@ public class TransactionsPage extends BasePage {
         return driver.findElements(rowsInTable).size();
     }
 
-
+//    @Attachment(value = "table", type = "text/csv", fileExtension = ".csv")
     public void parseTableAndWriteToCSV() {
         try {
             FileWriter csvWriter = new FileWriter("src/test/resources/table.csv");
@@ -53,20 +53,28 @@ public class TransactionsPage extends BasePage {
             }
             csvWriter.flush();
             csvWriter.close();
+
+            attachCsvFile();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Attachment(value = "table", type = "text/csv")
+    public byte[] attachCsvFile() throws IOException {
+        return Files.readAllBytes(Paths.get("src/test/resources/table.csv"));
     }
 
     private String formatDateTime(String text) {
         try {
             DateTimeFormatter inputFormatter = new DateTimeFormatterBuilder()
                     .parseCaseInsensitive()
-                    .appendPattern("MMM dd, yyyy K:mm:ss a")
+                    .appendPattern("MMM dd, yyyy h:mm:ss a")
                     .toFormatter(Locale.ENGLISH);
             DateTimeFormatter outputFormatter = new DateTimeFormatterBuilder()
                     .appendPattern("dd MMMM yyyy HH:mm:ss")
-                    .toFormatter(new Locale("ru", "RU"));
+                    .toFormatter(Locale.ENGLISH);
             LocalDateTime dateTime = LocalDateTime.parse(text, inputFormatter);
             return capitalizeFirstLetters(dateTime.format(outputFormatter));
         } catch (Exception e) {
