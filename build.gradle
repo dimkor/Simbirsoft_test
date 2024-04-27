@@ -27,7 +27,7 @@ tasks.withType(JavaCompile) {
 test {
     useJUnitPlatform()
     retry {
-        maxRetries = 3
+        maxRetries = 2
         maxFailures = 10
         failOnPassedAfterRetry = true
     }

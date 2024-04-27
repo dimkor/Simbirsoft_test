@@ -17,6 +17,7 @@ public class AccountPage extends BasePage {
     private final By ownerNameSpan = By.xpath("//span[contains(@class,'fontBig')]");
     private final By successfulMessage = By.xpath("//span[@ng-show='message']");
     private final By balanceDiv = By.xpath("//strong[@class='ng-binding'][2]");
+    private final By formGroupLabel = By.xpath("//div[@class='form-group']/label");
 
     public AccountPage(WebDriver driver) {
         super(driver);
@@ -26,12 +27,12 @@ public class AccountPage extends BasePage {
     private AccountPage clickOnDepositTabButton() {
         wait.until(ExpectedConditions.presenceOfElementLocated(depositTabButton));
         driver.findElement(depositTabButton).click();
+        wait.until(ExpectedConditions.textToBe(formGroupLabel, "Amount to be Deposited :"));
         return this;
     }
 
     @Step("Установить значение {value} в поле \"amount\"")
     private AccountPage setValueInAmountField(int value) throws InterruptedException {
-        Thread.sleep(500);
         WebElement inputField = wait.until(ExpectedConditions.elementToBeClickable(amountField));
         inputField.sendKeys(String.valueOf(value));
         return this;
@@ -56,6 +57,7 @@ public class AccountPage extends BasePage {
     private AccountPage clickOnWithdrawlTabButton() {
         wait.until(ExpectedConditions.presenceOfElementLocated(withdrawlTabButton));
         driver.findElement(withdrawlTabButton).click();
+        wait.until(ExpectedConditions.textToBe(formGroupLabel, "Amount to be Withdrawn :"));
         return this;
     }
 
